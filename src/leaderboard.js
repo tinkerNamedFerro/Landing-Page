@@ -1,16 +1,9 @@
 import React from 'react';
+import data from './data/data.json';
 import './App.css';
 
 function Leaderboard() {
-  // TODO: Replace with JSON import later
-  // import leaderboardData from './data/leaderboard.json';
-  const leaderboardData = [
-    { rank: 1, name: 'Alice', distance: 10500, time: 2730 },
-    { rank: 2, name: 'Bob', distance: 9800, time: 2535 },
-    { rank: 3, name: 'Charlie', distance: 9200, time: 2880 },
-    { rank: 4, name: 'Diana', distance: 8700, time: 3045 },
-    { rank: 5, name: 'Eve', distance: 8100, time: 3150 },
-  ];
+  const leaderboardData = data.leaderboard;
 
   // Sort by distance descending for distance leaderboard
   const distanceDescending = [...leaderboardData].sort((a, b) => b.distance - a.distance);

@@ -122,3 +122,44 @@
 .results-content {
   margin-top: 20px;
 }
+
+.results-card {
+  margin-top: 20px;
+  padding: 30px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  font-size: 18px;
+}
+
+.result-label {
+  font-weight: bold;
+  color: #61dafb;
+}
+
+.result-value {
+  text-align: right;
+  color: #61dafb;
+  font-weight: bold;
+}
+
+.sendit-content {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sendit-image {
+  max-width: 600px;
+  max-height: 600px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}

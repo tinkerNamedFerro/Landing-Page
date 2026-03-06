@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Leaderboard from './leaderboard';
 import Results from './Results';
+import SendIt from './SendIt';
 import './App.css';
 
 function App() {
@@ -21,8 +22,16 @@ function App() {
         >
           Results
         </button>
+        <button
+          className={currentPage === 'sendit' ? 'active' : ''}
+          onClick={() => setCurrentPage('sendit')}
+        >
+          Send it
+        </button>
       </nav>
-      {currentPage === 'leaderboard' ? <Leaderboard /> : <Results />}
+      {currentPage === 'leaderboard' && <Leaderboard />}
+      {currentPage === 'results' && <Results />}
+      {currentPage === 'sendit' && <SendIt />}
     </div>
   );
 }
