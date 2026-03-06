@@ -36,3 +36,56 @@
     transform: rotate(360deg);
   }
 }
+
+.leaderboard {
+  margin-top: 20px;
+}
+
+.leaderboard table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.leaderboard th,
+.leaderboard td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.leaderboard th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+.leaderboard tr:nth-child(even) {
+  background-color: #000;
+  color: #fff;
+}
+
+.leaderboard tr:nth-child(odd) {
+  background-color: #fff;
+  color: #000;
+}
+
+.leaderboards-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.leaderboard-section {
+  flex: 1;
+  min-width: 300px;
+  margin: 20px;
+}
+
+.leaderboard-section h2 {
+  margin-bottom: 10px;
+  color: #61dafb;
+}
