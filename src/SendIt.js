@@ -1,26 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
-function SendIt({ setCurrentPage, unlockAudio }) {
+function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, dropHeight, onYeet, freeFalling }) {
+  const [showAccel, setShowAccel] = useState(false);
+  const x = parseFloat(accelXYZ?.x ?? 0);
+  const y = parseFloat(accelXYZ?.y ?? 0);
+  const z = parseFloat(accelXYZ?.z ?? 0);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <button
-          className="nav-button"
-          onClick={() => { unlockAudio?.(); setCurrentPage('sendit'); }}
-        >
-          Send it
-        </button>
-        <div className="sendit-content">
-          <img src={require('./images/bombardino-crocodilo.png')} alt="Bombardino Crocodilo" className="sendit-image" />
+    <div className="sendit-page">
+      <h1 className="sendit-headline">Would you survive this fall?</h1>
+      <div className="sendit-illustration">
+        <img src={require('./images/main_logo.png')} alt="Send It" className="sendit-image" />
+      </div>
+      <button className="yeet-button" onClick={() => { unlockAudio?.(); onYeet?.(); }}>
+        YEET THIS SHIT
+      </button>
+      <button className="leaderboard-link" onClick={() => setCurrentPage('leaderboard')}>
+        Leaderboard
+      </button>
+      {showAccel && (
+        <div className="accel-panel">
+          <div className="accel-panel-title">Sensor Data</div>
+          <div className="accel-row"><span>X</span><span>{x.toFixed(3)}</span></div>
+          <div className="accel-row"><span>Y</span><span>{y.toFixed(3)}</span></div>
+          <div className="accel-row"><span>Z</span><span>{z.toFixed(3)}</span></div>
+          <div className="accel-divider" />
+          <div className="accel-row"><span>Total</span><span>{(totalAcceleration ?? 0).toFixed(4)} m/s²</span></div>
+          <div className="accel-row"><span>Drop</span><span>{(dropHeight ?? 0).toFixed(2)} m</span></div>
+          {freeFalling && <div className="accel-freefall">FREE FALL</div>}
         </div>
-        <button
-          className="nav-button"
-          onClick={() => setCurrentPage('leaderboard')}
-        >
-          Leaderboard
-        </button>
-      </header>
+      )}
+      <button
+        className="accel-toggle"
+        onClick={e => { e.stopPropagation(); setShowAccel(v => !v); }}
+        aria-label="Toggle accelerometer data"
+      >
+        📡
+      </button>
     </div>
   );
 }

@@ -57,27 +57,7 @@ function Jump({ callback }) {
     };
   }, []);
 
-  return (
-    <div style={{ padding: "20px", fontFamily: "monospace" }}>
-      <h2>Accelerometer</h2>
-
-      {needsPermission && !permissionGranted && (
-        <button onClick={requestIOSPermission} style={{ marginBottom: "16px", padding: "10px 20px" }}>
-          Enable Accelerometer (iOS)
-        </button>
-      )}
-
-      {permissionGranted ? (
-        <div>
-          <p>X: {acceleration.x ?? "—"}</p>
-          <p>Y: {acceleration.y ?? "—"}</p>
-          <p>Z: {acceleration.z ?? "—"}</p>
-        </div>
-      ) : (
-        !needsPermission && <p>Accelerometer not supported on this device.</p>
-      )}
-    </div>
-  );
+  return null;
 }
 
 export default Jump;

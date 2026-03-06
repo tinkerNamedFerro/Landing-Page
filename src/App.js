@@ -1,6 +1,6 @@
 
 import { useRef, useState } from "react";
-import bomboclatSound from './sounds/bomboclat.mp3';
+import manScreamSound from './sounds/man_scream.mp3';
 import Jump from "./components/Jump";
 import Leaderboard from './leaderboard';
 import Results from './Results';
@@ -20,18 +20,25 @@ function App() {
   const [currentPage, setCurrentPage] = useState('sendit');
 
   const [dropHeight, setDropHeight] = useState(0);
+  const [flightTime, setFlightTime] = useState(0);
 
+  const [freeFalling, setFreeFalling] = useState(false);
   const timeOfFreeFall = useRef(null);
   const freeFallDetected = useRef(false);
-  const audioRef = useRef(new Audio(bomboclatSound));
+  const audioRef = useRef(new Audio(manScreamSound));
+  const yeetActive = useRef(false);
   const audioUnlocked = useRef(false);
   const [totalAcceleration, setTotalAcceleration] = useState(0);
+  const [accelXYZ, setAccelXYZ] = useState({ x: 0, y: 0, z: 0 });
 
   function unlockAudio() {
     if (!audioUnlocked.current) {
+      const wasYeetActive = yeetActive.current;
       audioRef.current.play().then(() => {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
+        if (!wasYeetActive) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
         audioUnlocked.current = true;
       }).catch(() => {});
     }
@@ -42,35 +49,52 @@ function App() {
     console.log(`Acceleration X: ${acc.x}, Y: ${acc.y}, Z: ${acc.z}`);
     const totalAcceleration = Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
     setTotalAcceleration(totalAcceleration);
-    if (totalAcceleration < freefallThreshold && !freeFallDetected.current) {
+    setAccelXYZ({ x: acc.x, y: acc.y, z: acc.z });
+    if (freeFallDetected.current) {
+      setDropHeight(calculateDropHeight(timeOfFreeFall.current));
+    }
+    if (totalAcceleration < freefallThreshold && !freeFallDetected.current && yeetActive.current) {
       console.log("Free fall detected!");
       freeFallDetected.current = true;
+      setFreeFalling(true);
       timeOfFreeFall.current = Date.now();
       audioRef.current.currentTime = 0;
       audioRef.current.play();
     }
 
-    if(freeFallDetected.current && totalAcceleration >= freefallThreshold) {
+    if (freeFallDetected.current && totalAcceleration >= freefallThreshold) {
       console.log("Device has landed.");
       freeFallDetected.current = false;
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+      setFreeFalling(false);
       const dropHeight = calculateDropHeight(timeOfFreeFall.current);
+      const flightTime = (Date.now() - timeOfFreeFall.current) / 1000;
       setDropHeight(dropHeight);
-      setCurrentPage('results'); // auto-navigate to results
+      setFlightTime(flightTime);
+      if (yeetActive.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        yeetActive.current = false;
+        setCurrentPage('results');
+      }
     }
   }
 
   return (
     <div className="App" onClick={unlockAudio}>
-      {currentPage === 'leaderboard' && <Leaderboard />}
-      {currentPage === 'results' && <Results />}
-      {currentPage === 'sendit' && <SendIt setCurrentPage={setCurrentPage} unlockAudio={unlockAudio} />}
+      {currentPage === 'leaderboard' && <Leaderboard setCurrentPage={setCurrentPage} />}
+      {currentPage === 'results' && <Results setCurrentPage={setCurrentPage} dropHeight={dropHeight} flightTime={flightTime} />}
+      {currentPage === 'sendit' && (
+        <SendIt
+          setCurrentPage={setCurrentPage}
+          unlockAudio={unlockAudio}
+          accelXYZ={accelXYZ}
+          totalAcceleration={totalAcceleration}
+          dropHeight={dropHeight}
+          freeFalling={freeFalling}
+          onYeet={() => { yeetActive.current = true; }}
+        />
+      )}
       <Jump callback={accelerometerHandler} />
-      {freeFallDetected.current && <p style={{ color: "red" }}>Free fall detected!</p>}
-      {<p>Drop height: {dropHeight.toFixed(2)} meters</p>}
-
-      {totalAcceleration > 0 && <p>Total Acceleration: {totalAcceleration.toFixed(4)} m/s²</p>}
     </div>
   );
 }
