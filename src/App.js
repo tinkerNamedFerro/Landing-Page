@@ -1,5 +1,6 @@
 
 import { useRef, useState } from "react";
+import bomboclatSound from './sounds/bomboclat.mp3';
 import Jump from "./components/Jump";
 import Leaderboard from './leaderboard';
 import Results from './Results';
@@ -16,13 +17,25 @@ const freefallThreshold = 0.5; // m/s²
 function App() {
 
 
-  const [currentPage, setCurrentPage] = useState('leaderboard');
+  const [currentPage, setCurrentPage] = useState('sendit');
 
   const [dropHeight, setDropHeight] = useState(0);
 
   const timeOfFreeFall = useRef(null);
- const freeFallDetected = useRef(false);
+  const freeFallDetected = useRef(false);
+  const audioRef = useRef(new Audio(bomboclatSound));
+  const audioUnlocked = useRef(false);
   const [totalAcceleration, setTotalAcceleration] = useState(0);
+
+  function unlockAudio() {
+    if (!audioUnlocked.current) {
+      audioRef.current.play().then(() => {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioUnlocked.current = true;
+      }).catch(() => {});
+    }
+  }
 
   function accelerometerHandler(acc) {
     if (!acc) return;
@@ -33,45 +46,30 @@ function App() {
       console.log("Free fall detected!");
       freeFallDetected.current = true;
       timeOfFreeFall.current = Date.now();
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
     }
 
     if(freeFallDetected.current && totalAcceleration >= freefallThreshold) {
       console.log("Device has landed.");
       freeFallDetected.current = false;
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
       const dropHeight = calculateDropHeight(timeOfFreeFall.current);
       setDropHeight(dropHeight);
+      setCurrentPage('results'); // auto-navigate to results
     }
   }
 
   return (
-    <div className="App">
-      <nav className="app-navigation">
-        <button
-          className={currentPage === 'leaderboard' ? 'active' : ''}
-          onClick={() => setCurrentPage('leaderboard')}
-        >
-          Leaderboard
-        </button>
-        <button
-          className={currentPage === 'results' ? 'active' : ''}
-          onClick={() => setCurrentPage('results')}
-        >
-          Results
-        </button>
-        <button
-          className={currentPage === 'sendit' ? 'active' : ''}
-          onClick={() => setCurrentPage('sendit')}
-        >
-          Send it
-        </button>
-      </nav>
+    <div className="App" onClick={unlockAudio}>
       {currentPage === 'leaderboard' && <Leaderboard />}
       {currentPage === 'results' && <Results />}
-      {currentPage === 'sendit' && <SendIt />}
+      {currentPage === 'sendit' && <SendIt setCurrentPage={setCurrentPage} unlockAudio={unlockAudio} />}
       <Jump callback={accelerometerHandler} />
       {freeFallDetected.current && <p style={{ color: "red" }}>Free fall detected!</p>}
       {<p>Drop height: {dropHeight.toFixed(2)} meters</p>}
-    
+
       {totalAcceleration > 0 && <p>Total Acceleration: {totalAcceleration.toFixed(4)} m/s²</p>}
     </div>
   );
