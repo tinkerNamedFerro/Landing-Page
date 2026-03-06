@@ -258,6 +258,16 @@
   box-shadow: 0 3px 12px rgba(180, 0, 180, 0.4);
 }
 
+.yeet-button--chickened {
+  background: #555;
+  color: #aaa;
+  box-shadow: none;
+}
+
+.yeet-button:disabled {
+  cursor: default;
+}
+
 .leaderboard-link {
   background: none;
   border: none;

@@ -3,18 +3,35 @@ import './App.css';
 
 function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, dropHeight, onYeet, freeFalling }) {
   const [showAccel, setShowAccel] = useState(false);
+  const [yeetCount, setYeetCount] = useState(0);
+
+  const YEET_LABELS = [
+    'YEET THIS SHIT',
+    'GO',
+    'CHICKEN',
+    "Knew u wouldn't",
+    'Pussy 🐱',
+    'Why r you still here',
+  ];
   const x = parseFloat(accelXYZ?.x ?? 0);
   const y = parseFloat(accelXYZ?.y ?? 0);
   const z = parseFloat(accelXYZ?.z ?? 0);
 
   return (
     <div className="sendit-page">
-      <h1 className="sendit-headline">Would you survive this fall?</h1>
+      <h1 className="sendit-headline">Can you mog the height?</h1>
       <div className="sendit-illustration">
         <img src={require('./images/main_logo.png')} alt="Send It" className="sendit-image" />
       </div>
-      <button className="yeet-button" onClick={() => { unlockAudio?.(); onYeet?.(); }}>
-        YEET THIS SHIT
+      <button
+        className={`yeet-button${yeetCount > 0 ? ' yeet-button--chickened' : ''}`}
+        disabled={yeetCount >= YEET_LABELS.length - 1}
+        onClick={() => {
+          if (yeetCount === 0) { unlockAudio?.(); onYeet?.(); }
+          setYeetCount(c => Math.min(c + 1, YEET_LABELS.length - 1));
+        }}
+      >
+        {YEET_LABELS[yeetCount]}
       </button>
       <button className="leaderboard-link" onClick={() => setCurrentPage('leaderboard')}>
         Leaderboard
