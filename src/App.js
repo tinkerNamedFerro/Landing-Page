@@ -1,6 +1,11 @@
-import "./App.css";
+
 import { useRef, useState } from "react";
 import Jump from "./components/Jump";
+import Leaderboard from './leaderboard';
+import Results from './Results';
+import SendIt from './SendIt';
+import './App.css';
+
 
 const freefallThreshold = 0.5; // m/s²
 
@@ -10,6 +15,8 @@ const freefallThreshold = 0.5; // m/s²
   }
 function App() {
 
+
+  const [currentPage, setCurrentPage] = useState('leaderboard');
 
   const [dropHeight, setDropHeight] = useState(0);
 
@@ -35,14 +42,37 @@ function App() {
       setDropHeight(dropHeight);
     }
   }
+
   return (
     <div className="App">
+      <nav className="app-navigation">
+        <button
+          className={currentPage === 'leaderboard' ? 'active' : ''}
+          onClick={() => setCurrentPage('leaderboard')}
+        >
+          Leaderboard
+        </button>
+        <button
+          className={currentPage === 'results' ? 'active' : ''}
+          onClick={() => setCurrentPage('results')}
+        >
+          Results
+        </button>
+        <button
+          className={currentPage === 'sendit' ? 'active' : ''}
+          onClick={() => setCurrentPage('sendit')}
+        >
+          Send it
+        </button>
+      </nav>
+      {currentPage === 'leaderboard' && <Leaderboard />}
+      {currentPage === 'results' && <Results />}
+      {currentPage === 'sendit' && <SendIt />}
       <Jump callback={accelerometerHandler} />
       {freeFallDetected.current && <p style={{ color: "red" }}>Free fall detected!</p>}
       {<p>Drop height: {dropHeight.toFixed(2)} meters</p>}
     
       {totalAcceleration > 0 && <p>Total Acceleration: {totalAcceleration.toFixed(4)} m/s²</p>}
-      
     </div>
   );
 }
