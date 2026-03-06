@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/Landing-Page/static/css/main.1821a1c0.css",
-    "main.js": "/Landing-Page/static/js/main.5b0d10e5.js",
+    "main.js": "/Landing-Page/static/js/main.d2ff99ff.js",
     "static/js/453.951ee1ab.chunk.js": "/Landing-Page/static/js/453.951ee1ab.chunk.js",
     "static/media/bombardino-crocodilo.png": "/Landing-Page/static/media/bombardino-crocodilo.e0d190f3b23ddd15c5a0.png",
     "static/media/bomboclat.mp3": "/Landing-Page/static/media/bomboclat.f0c1ec43fa7ac6d2abb1.mp3",
     "index.html": "/Landing-Page/index.html",
     "main.1821a1c0.css.map": "/Landing-Page/static/css/main.1821a1c0.css.map",
-    "main.5b0d10e5.js.map": "/Landing-Page/static/js/main.5b0d10e5.js.map",
+    "main.d2ff99ff.js.map": "/Landing-Page/static/js/main.d2ff99ff.js.map",
     "453.951ee1ab.chunk.js.map": "/Landing-Page/static/js/453.951ee1ab.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1821a1c0.css",
-    "static/js/main.5b0d10e5.js"
+    "static/js/main.d2ff99ff.js"
   ]
 }
