@@ -1,6 +1,8 @@
 
 import { useRef, useState } from "react";
 import manScreamSound from './sounds/man_scream.mp3';
+import darkSoulsDeathSound from './sounds/Dark souls death.mp3';
+import okayLetsGoSound from './sounds/okay_lets_go.mp3';
 import Jump from "./components/Jump";
 import Leaderboard from './leaderboard';
 import Results from './Results';
@@ -26,10 +28,24 @@ function App() {
   const timeOfFreeFall = useRef(null);
   const freeFallDetected = useRef(false);
   const audioRef = useRef(new Audio(manScreamSound));
+  const deathAudioRef = useRef(new Audio(darkSoulsDeathSound));
+  const okayAudioRef = useRef(new Audio(okayLetsGoSound));
+  const [died, setDied] = useState(false);
   const yeetActive = useRef(false);
   const audioUnlocked = useRef(false);
   const [totalAcceleration, setTotalAcceleration] = useState(0);
   const [accelXYZ, setAccelXYZ] = useState({ x: 0, y: 0, z: 0 });
+  const [muted, setMuted] = useState(false);
+
+  function toggleMute() {
+    setMuted(prev => {
+      const next = !prev;
+      audioRef.current.muted = next;
+      deathAudioRef.current.muted = next;
+      okayAudioRef.current.muted = next;
+      return next;
+    });
+  }
 
   function unlockAudio() {
     if (!audioUnlocked.current) {
@@ -74,7 +90,18 @@ function App() {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
         yeetActive.current = false;
-        setCurrentPage('results');
+        setTimeout(() => {
+          const playerDied = Math.random() < 0.5;
+          setDied(playerDied);
+          if (playerDied) {
+            deathAudioRef.current.currentTime = 0;
+            deathAudioRef.current.play();
+          } else {
+            okayAudioRef.current.currentTime = 0;
+            okayAudioRef.current.play();
+          }
+          setCurrentPage('results');
+        }, 500);
       }
     }
   }
@@ -82,7 +109,7 @@ function App() {
   return (
     <div className="App" onClick={unlockAudio}>
       {currentPage === 'leaderboard' && <Leaderboard setCurrentPage={setCurrentPage} />}
-      {currentPage === 'results' && <Results setCurrentPage={setCurrentPage} dropHeight={dropHeight} flightTime={flightTime} />}
+      {currentPage === 'results' && <Results setCurrentPage={setCurrentPage} dropHeight={dropHeight} flightTime={flightTime} died={died} />}
       {currentPage === 'sendit' && (
         <SendIt
           setCurrentPage={setCurrentPage}
@@ -92,6 +119,8 @@ function App() {
           dropHeight={dropHeight}
           freeFalling={freeFalling}
           onYeet={() => { yeetActive.current = true; }}
+          muted={muted}
+          toggleMute={toggleMute}
         />
       )}
       <Jump callback={accelerometerHandler} />

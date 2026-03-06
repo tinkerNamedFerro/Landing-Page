@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
-function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, dropHeight, onYeet, freeFalling }) {
+function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, dropHeight, onYeet, freeFalling, muted, toggleMute }) {
   const [showAccel, setShowAccel] = useState(false);
   const [yeetCount, setYeetCount] = useState(0);
 
@@ -48,6 +48,13 @@ function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, drop
           {freeFalling && <div className="accel-freefall">FREE FALL</div>}
         </div>
       )}
+      <button
+        className="mute-toggle"
+        onClick={e => { e.stopPropagation(); toggleMute(); }}
+        aria-label="Toggle mute"
+      >
+        {muted ? '🔇' : '🔊'}
+      </button>
       <button
         className="accel-toggle"
         onClick={e => { e.stopPropagation(); setShowAccel(v => !v); }}

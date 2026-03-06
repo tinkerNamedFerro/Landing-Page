@@ -297,6 +297,24 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+.mute-toggle {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  line-height: 1;
+}
+
+.mute-toggle:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .accel-panel {
   position: absolute;
   bottom: 70px;
