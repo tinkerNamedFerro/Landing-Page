@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/Landing-Page/static/css/main.349404e1.css",
-    "main.js": "/Landing-Page/static/js/main.56423bbe.js",
-    "static/js/453.a903de28.chunk.js": "/Landing-Page/static/js/453.a903de28.chunk.js",
+    "main.css": "/Landing-Page/static/css/main.01fcdbb6.css",
+    "main.js": "/Landing-Page/static/js/main.0bcb1e0b.js",
+    "static/js/453.951ee1ab.chunk.js": "/Landing-Page/static/js/453.951ee1ab.chunk.js",
+    "static/media/bombardino-crocodilo.png": "/Landing-Page/static/media/bombardino-crocodilo.e0d190f3b23ddd15c5a0.png",
     "index.html": "/Landing-Page/index.html",
-    "main.349404e1.css.map": "/Landing-Page/static/css/main.349404e1.css.map",
-    "main.56423bbe.js.map": "/Landing-Page/static/js/main.56423bbe.js.map",
-    "453.a903de28.chunk.js.map": "/Landing-Page/static/js/453.a903de28.chunk.js.map"
+    "main.01fcdbb6.css.map": "/Landing-Page/static/css/main.01fcdbb6.css.map",
+    "main.0bcb1e0b.js.map": "/Landing-Page/static/js/main.0bcb1e0b.js.map",
+    "453.951ee1ab.chunk.js.map": "/Landing-Page/static/js/453.951ee1ab.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.349404e1.css",
-    "static/js/main.56423bbe.js"
+    "static/css/main.01fcdbb6.css",
+    "static/js/main.0bcb1e0b.js"
   ]
 }
