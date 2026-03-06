@@ -15,9 +15,6 @@ function Leaderboard() {
   // Sort by distance descending for distance leaderboard
   const distanceDescending = [...leaderboardData].sort((a, b) => b.distance - a.distance);
   
-  // Sort by time ascending for time leaderboard
-  const timeAscending = [...leaderboardData].sort((a, b) => b.time - a.time);
-  
   // Sort by distance ascending for the new leaderboard
   const distanceAscending = [...leaderboardData].sort((a, b) => a.distance - b.distance);
 
@@ -27,7 +24,7 @@ function Leaderboard() {
         <h1>Leaderboards</h1>
         <div className="leaderboards-container">
           <div className="leaderboard-section">
-            <h2>Those who did it</h2>
+            <h2>Those who didn't</h2>
             <div className="leaderboard">
               <table>
                 <thead>
@@ -52,7 +49,7 @@ function Leaderboard() {
             </div>
           </div>
           <div className="leaderboard-section">
-            <h2>Those who didn't</h2>
+            <h2>Those who did it</h2>
             <div className="leaderboard">
               <table>
                 <thead>
@@ -80,6 +77,7 @@ function Leaderboard() {
       </header>
     </div>
   );
+
 }
 
 export default Leaderboard;
