@@ -20,31 +20,6 @@ function Leaderboard({ setCurrentPage }) {
       <h1 className="sendit-headline">Leaderboards</h1>
       <div className="leaderboards-container">
           <div className="leaderboard-section">
-            <h2>Those who didn't</h2>
-            <div className="leaderboard">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Distance (m)</th>
-                    <th>Time (s)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {distanceDescending.map((entry, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{entry.name}</td>
-                      <td>{entry.distance}</td>
-                      <td>{entry.time}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className="leaderboard-section">
             <h2>Those who did it</h2>
             <div className="leaderboard">
               <table>
