@@ -61,7 +61,7 @@ function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, drop
           setYeetCount(c => Math.min(c + 1, YEET_LABELS.length - 1));
         }}
       >
-        {YEET_LABELS[yeetCount]}
+        <span key={yeetCount} className="yeet-button-text">{YEET_LABELS[yeetCount]}</span>
       </button>
       <button className="leaderboard-link" onClick={() => setCurrentPage('leaderboard')}>
         Leaderboard

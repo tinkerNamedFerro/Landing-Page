@@ -6,10 +6,12 @@ import whenIsHeGonnaJumpSrc from "./sounds/narration/when_is_he_gonna_jump.mp3";
 import iDontKnowSrc from "./sounds/narration/i_dont_fucking_know.mp3";
 import whatJumpSrc from "./sounds/narration/what_the_fucking_kind_of_jump.mp3";
 import NoobJumpSrc from "./sounds/narration/noob_jump.mp3";
-
+import AreYouAliveSrc from "./sounds/narration/are_you_alive.mp3";
+import MaybeNotSrc from "./sounds/narration/maybe_not.mp3";
 import Leaderboard from "./leaderboard";
 import Results from "./Results";
 import SendIt from "./SendIt";
+import StillAlive from "./StillAlive";
 import "./App.css";
 
 const freefallThreshold = 0.5; // m/s²
@@ -39,10 +41,11 @@ function App() {
   const yeetActive = useRef(false);
   const audioUnlocked = useRef(false);
   const mutedRef = useRef(false);
+  const answeredRef = useRef(null);
   const [totalAcceleration, setTotalAcceleration] = useState(0);
   const [accelXYZ, setAccelXYZ] = useState({ x: 0, y: 0, z: 0 });
   const [muted, setMuted] = useState(false);
-
+  const [answered, setAnswered] = useState(null); // 'yes' | 'no'
   const isIOS = () =>
     typeof DeviceMotionEvent !== "undefined" &&
     typeof DeviceMotionEvent.requestPermission === "function";
@@ -69,9 +72,21 @@ function App() {
       loadBuffer(iDontKnowSrc),
       loadBuffer(whatJumpSrc),
       loadBuffer(NoobJumpSrc),
+      loadBuffer(AreYouAliveSrc),
+      loadBuffer(MaybeNotSrc),
     ])
       .then(
-        ([scream, death, okay, whenJump, iDontKnow, whatJump, noobJump]) => {
+        ([
+          scream,
+          death,
+          okay,
+          whenJump,
+          iDontKnow,
+          whatJump,
+          noobJump,
+          areYouAlive,
+          maybeNot,
+        ]) => {
           buffersRef.current = {
             scream,
             death,
@@ -80,6 +95,8 @@ function App() {
             iDontKnow,
             whatJump,
             noobJump,
+            areYouAlive,
+            maybeNot,
           };
         },
       )
@@ -167,15 +184,33 @@ function App() {
       source.onended = () => playSound("iDontKnow");
     }
   }
-  function playWhatKindNarration(distance) {
+  function playWhatKindNarration(died) {
+    playSound(died ? "death" : "okay");
+
     const source = playSound("whatJump");
     if (source) {
       source.onended = () => {
-        if (distance < 0.3) {
-          playSound("noobJump");
-        } else {
-          playSound("iDontKnow");
-        }
+       if(died)
+       {
+        playSound("iDontKnow");
+       }
+       else
+       {
+        playSound("noobJump");
+       }
+      };
+    }
+  }
+  function playAreYouAliveNarration() {
+    const source = playSound("areYouAlive");
+    if (source) {
+      source.onended = () => {
+        setTimeout(() => {
+          // Only play if user hasn't answered yet
+          if (answeredRef.current === null) {
+            playSound("maybeNot");
+          }
+        }, 1600);
       };
     }
   }
@@ -201,14 +236,15 @@ function App() {
     };
     console.log(`Acceleration X: ${acc.x}, Y: ${acc.y}, Z: ${acc.z}`);
     const totalAcceleration = Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
-    
+
     // Filter out small fluctuations during freefall
-    const effectiveAcceleration = freeFallDetected.current && totalAcceleration < 2.0 
-      ? 0 
-      : totalAcceleration;
+    const effectiveAcceleration =
+      freeFallDetected.current && totalAcceleration < 2.0
+        ? 0
+        : totalAcceleration;
     setTotalAcceleration(effectiveAcceleration);
     setAccelXYZ(data);
-    
+
     if (
       effectiveAcceleration < freefallThreshold &&
       !freeFallDetected.current &&
@@ -221,7 +257,10 @@ function App() {
       screamSourceRef.current = playSound("scream");
     }
 
-    if (freeFallDetected.current && effectiveAcceleration >= freefallThreshold) {
+    if (
+      freeFallDetected.current &&
+      effectiveAcceleration >= freefallThreshold
+    ) {
       console.log("Device has landed.");
       freeFallDetected.current = false;
       setFreeFalling(false);
@@ -233,11 +272,10 @@ function App() {
         stopScream();
         yeetActive.current = false;
         setTimeout(() => {
-          const playerDied = Math.random() < 0.5;
-          setDied(playerDied);
-          playSound(playerDied ? "death" : "okay");
-          playWhatKindNarration(dropHeight);
-          setCurrentPage("results");
+          playAreYouAliveNarration();
+          setAnswered(null);
+          answeredRef.current = null;
+          setCurrentPage("stillalive");
         }, 500);
       }
     }
@@ -247,6 +285,18 @@ function App() {
     <div className="App" onClick={unlockAudio}>
       {currentPage === "leaderboard" && (
         <Leaderboard setCurrentPage={setCurrentPage} />
+      )}
+      {currentPage === "stillalive" && (
+        <StillAlive
+          setCurrentPage={setCurrentPage}
+          setAnswered={(value) => {
+            setAnswered(value);
+            answeredRef.current = value;
+          }}
+          answered={answered}
+          playWhatKindNarration={playWhatKindNarration}
+          dropHeight={dropHeight}
+        />
       )}
       {currentPage === "results" && (
         <Results
