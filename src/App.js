@@ -8,6 +8,7 @@ import whatJumpSrc from "./sounds/narration/what_the_fucking_kind_of_jump.mp3";
 import NoobJumpSrc from "./sounds/narration/noob_jump.mp3";
 import AreYouAliveSrc from "./sounds/narration/are_you_alive.mp3";
 import MaybeNotSrc from "./sounds/narration/maybe_not.mp3";
+import broDeadSrc from "./sounds/narration/bro_dead.mp3";
 import Leaderboard from "./leaderboard";
 import Results from "./Results";
 import SendIt from "./SendIt";
@@ -74,6 +75,7 @@ function App() {
       loadBuffer(NoobJumpSrc),
       loadBuffer(AreYouAliveSrc),
       loadBuffer(MaybeNotSrc),
+      loadBuffer(broDeadSrc)
     ])
       .then(
         ([
@@ -86,6 +88,7 @@ function App() {
           noobJump,
           areYouAlive,
           maybeNot,
+          broDead
         ]) => {
           buffersRef.current = {
             scream,
@@ -97,6 +100,7 @@ function App() {
             noobJump,
             areYouAlive,
             maybeNot,
+            broDead
           };
         },
       )
@@ -192,7 +196,7 @@ function App() {
       source.onended = () => {
        if(died)
        {
-        playSound("iDontKnow");
+        playSound("broDead");
        }
        else
        {
@@ -296,6 +300,7 @@ function App() {
           answered={answered}
           playWhatKindNarration={playWhatKindNarration}
           dropHeight={dropHeight}
+          setDied={setDied}
         />
       )}
       {currentPage === "results" && (

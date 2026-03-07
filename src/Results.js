@@ -23,7 +23,7 @@ function useCountUp(target, { duration = 1300, decimals = 2, delay = 0 } = {}) {
   return val;
 }
 
-function Results({ setCurrentPage, dropHeight, flightTime }) {
+function Results({ setCurrentPage, dropHeight, flightTime, died }) {
   const addEntry = useMutation(api.leaderboard.addEntry);
   const [entrySent, setEntrySent] = useState(false);
 
@@ -33,19 +33,19 @@ function Results({ setCurrentPage, dropHeight, flightTime }) {
   ];
 
   useEffect(() => {
-    if (!entrySent) {
+    if (!entrySent && !died) {
       const randomName = names[Math.floor(Math.random() * names.length)];
       addEntry({ name: randomName, distance: dropHeight, time: flightTime, survived: true });
       setEntrySent(true);
     }
-  }, [addEntry, dropHeight, flightTime, entrySent]);
+  }, [addEntry, dropHeight, flightTime, entrySent, died]);
 
   const animDist = useCountUp(dropHeight, { delay: 320 });
   const animTime = useCountUp(flightTime, { delay: 500 });
 
   return (
     <div className="results-page">
-      <div className="results-trophy">🏆</div>
+      <div className="results-trophy">{died ? '💀' : '🏆'}</div>
       <h1 className="sendit-headline results-headline">You Sent It!</h1>
       <div className="results-content">
         <div className="results-card">

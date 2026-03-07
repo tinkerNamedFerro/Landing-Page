@@ -3,7 +3,7 @@ import "./App.css";
 
 const TOTAL = 10;
 
-function StillAlive({ setCurrentPage, setAnswered, answered, playWhatKindNarration}) {
+function StillAlive({ setCurrentPage, setAnswered, answered, playWhatKindNarration, setDied }) {
   const [remaining, setRemaining] = useState(TOTAL);
 
   const intervalRef = useRef(null);
@@ -17,6 +17,7 @@ function StillAlive({ setCurrentPage, setAnswered, answered, playWhatKindNarrati
           setTimeout(() => {
             setCurrentPage("results");
             const playerDied = true;
+             setDied(playerDied);
             playWhatKindNarration(playerDied);
           }, 400);
           return 0;
@@ -33,6 +34,7 @@ function StillAlive({ setCurrentPage, setAnswered, answered, playWhatKindNarrati
     setTimeout(() => {
       setCurrentPage("results");
       const playerDied = answer == "yes" ? false : true;
+      setDied(playerDied);
       playWhatKindNarration(playerDied);
     }, 1400);
   };
