@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
-function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, dropHeight, onYeet, freeFalling, muted, toggleMute }) {
+function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, dropHeight, onYeet, freeFalling, muted, toggleMute, permissionGranted, requestIOSPermission }) {
   const [showAccel, setShowAccel] = useState(false);
   const [yeetCount, setYeetCount] = useState(0);
 
@@ -13,6 +13,12 @@ function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, drop
     'Pussy 🐱',
     'Why r you still here',
   ];
+
+  if(!permissionGranted) {
+
+    requestIOSPermission();
+
+  }
   const x = parseFloat(accelXYZ?.x ?? 0);
   const y = parseFloat(accelXYZ?.y ?? 0);
   const z = parseFloat(accelXYZ?.z ?? 0);
