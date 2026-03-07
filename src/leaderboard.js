@@ -1,15 +1,19 @@
 import React from 'react';
-import data from './data/data.json';
 import './App.css';
+import { useQuery } from 'convex/react';
+import { api } from './convex/_generated/api';
 
 function Leaderboard({ setCurrentPage }) {
-  const leaderboardData = data.leaderboard;
+  // fetch all entries from the Convex `leaderboard` collection
+  const entries = useQuery(api.leaderboard.getLeaderboard) || [];
 
-  // Sort by distance descending for distance leaderboard
-  const distanceDescending = [...leaderboardData].sort((a, b) => b.distance - a.distance);
-  
-  // Sort by distance ascending for the new leaderboard
-  const distanceAscending = [...leaderboardData].sort((a, b) => a.distance - b.distance);
+  // split survivors / non‑survivors like the original UI did
+  const survivedTrue = entries.filter((e) => e.survived);
+  const survivedFalse = entries.filter((e) => !e.survived);
+
+  // sort each list by distance
+  const distanceDescending = [...survivedFalse].sort((a, b) => b.distance - a.distance);
+  const distanceAscending = [...survivedTrue].sort((a, b) => a.distance - b.distance);
 
   return (
     <div className="sendit-page">

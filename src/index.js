@@ -4,10 +4,22 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// Convex setup
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
+
+// `convex dev` or your production environment should set
+// REACT_APP_CONVEX_URL to the URL of the Convex deployment.
+// Create a client with that address.
+const convexClient = new ConvexReactClient(
+  process.env.REACT_APP_CONVEX_URL
+);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ConvexProvider client={convexClient}>
+      <App />
+    </ConvexProvider>
   </React.StrictMode>
 );
 
