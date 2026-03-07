@@ -46,18 +46,37 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  table-layout: auto;
+}
+
+@media (max-width: 600px) {
+  .leaderboard table {
+    font-size: 0.85em;
+  }
 }
 
 .leaderboard th,
 .leaderboard td {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px;
+  padding: 12px;
   text-align: center;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 600px) {
+  .leaderboard th,
+  .leaderboard td {
+    padding: 8px 4px;
+  }
 }
 
 .leaderboard th {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.5px;
 }
 
 .leaderboard tr:nth-child(even) {
@@ -70,19 +89,103 @@
   color: #fff;
 }
 
+/* Leaderboard Animations */
+.leaderboards-fade-in {
+  animation: fadeInScale 0.6s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.leaderboard-title {
+  animation: fadeInDown 0.5s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.leaderboard-header-row {
+  animation: fadeInDown 0.5s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.leaderboard-row {
+  opacity: 0;
+  animation: leaderboardRowSlide 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.leaderboard-row:hover {
+  background-color: rgba(97, 218, 251, 0.15) !important;
+  transform: translateX(8px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(97, 218, 251, 0.3);
+}
+
+@media (max-width: 768px) {
+  .leaderboard-row:hover {
+    transform: scale(1.01);
+  }
+}
+
+@media (hover: none) {
+  .leaderboard-row:hover {
+    transform: none;
+    background-color: inherit !important;
+    box-shadow: none;
+  }
+  
+  .leaderboard-row:active {
+    background-color: rgba(97, 218, 251, 0.15) !important;
+    transform: scale(0.98);
+  }
+}
+
+.leaderboard-row .rank-cell {
+  font-weight: 700;
+  color: #61dafb;
+  font-size: 1.1em;
+}
+
+.leaderboard-row:nth-child(1) .rank-cell {
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.leaderboard-row:nth-child(2) .rank-cell {
+  color: #C0C0C0;
+  text-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+}
+
+.leaderboard-row:nth-child(3) .rank-cell {
+  color: #CD7F32;
+  text-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
+}
+
+.name-cell {
+  font-weight: 500;
+}
+
+.distance-cell,
+.time-cell {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
 .leaderboards-container {
   display: flex;
   justify-content: space-around;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 20px auto;
   flex-wrap: wrap;
+  flex: 1;
 }
 
 .leaderboard-section {
   flex: 1;
   min-width: 300px;
   margin: 20px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .leaderboard-section {
+    margin: 10px;
+    min-width: 280px;
+  }
 }
 
 .leaderboard-section h2 {
@@ -266,16 +369,17 @@
 }
 
 .sendit-page {
-  height: 100dvh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 18px 24px 24px;
+  justify-content: flex-start;
+  padding: 18px 24px 48px;
   background: linear-gradient(180deg, #ff1f7d 0%, #9b1fe8 55%, #3a0d8f 100%);
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sendit-headline {
@@ -283,9 +387,19 @@
   font-size: clamp(2rem, 8vw, 3.2rem);
   font-weight: 900;
   text-align: center;
-  margin: 0;
+  margin: 0 0 20px 0;
   line-height: 1.2;
   text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+
+@media (max-width: 600px) {
+  .sendit-page {
+    padding: 12px 12px 36px;
+  }
+  
+  .sendit-headline {
+    margin: 0 0 12px 0;
+  }
 }
 
 .sendit-illustration {
@@ -309,6 +423,8 @@
   width: 100%;
   max-width: 380px;
   padding: 20px 0;
+  margin-top: 24px;
+  flex-shrink: 0;
   background: linear-gradient(90deg, #ff1f7d, #c44bff);
   color: #fff;
   font-size: 1.3rem;
@@ -526,6 +642,17 @@
 @keyframes trophyFloat {
   0%, 100% { transform: translateY(0px)   rotate(-2deg); }
   50%       { transform: translateY(-9px) rotate(2deg); }
+}
+
+@keyframes leaderboardRowSlide {
+  from { 
+    opacity: 0; 
+    transform: translateX(-30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
 }
 
 /* =====================================================

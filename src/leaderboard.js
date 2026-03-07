@@ -18,13 +18,13 @@ function Leaderboard({ setCurrentPage }) {
   return (
     <div className="sendit-page">
       <h1 className="sendit-headline">Leaderboards</h1>
-      <div className="leaderboards-container">
+      <div className="leaderboards-container leaderboards-fade-in">
           <div className="leaderboard-section">
-            <h2>Those who did it</h2>
+            <h2 className="leaderboard-title">Those who did it</h2>
             <div className="leaderboard">
               <table>
                 <thead>
-                  <tr>
+                  <tr className="leaderboard-header-row">
                     <th>Rank</th>
                     <th>Name</th>
                     <th>Distance (m)</th>
@@ -33,11 +33,15 @@ function Leaderboard({ setCurrentPage }) {
                 </thead>
                 <tbody>
                   {distanceAscending.map((entry, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{entry.name}</td>
-                      <td>{entry.distance}</td>
-                      <td>{entry.time}</td>
+                    <tr 
+                      key={index} 
+                      className="leaderboard-row"
+                      style={{ animationDelay: `${0.3 + index * 0.05}s` }}
+                    >
+                      <td className="rank-cell">{index + 1}</td>
+                      <td className="name-cell">{entry.name}</td>
+                      <td className="distance-cell">{entry.distance}</td>
+                      <td className="time-cell">{entry.time}</td>
                     </tr>
                   ))}
                 </tbody>
