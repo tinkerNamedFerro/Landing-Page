@@ -201,13 +201,16 @@ function App() {
     };
     console.log(`Acceleration X: ${acc.x}, Y: ${acc.y}, Z: ${acc.z}`);
     const totalAcceleration = Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
-    setTotalAcceleration(totalAcceleration);
+    
+    // Filter out small fluctuations during freefall
+    const effectiveAcceleration = freeFallDetected.current && totalAcceleration < 2.0 
+      ? 0 
+      : totalAcceleration;
+    setTotalAcceleration(effectiveAcceleration);
     setAccelXYZ(data);
-    if (freeFallDetected.current) {
-      setDropHeight(calculateDropHeight(timeOfFreeFall.current));
-    }
+    
     if (
-      totalAcceleration < freefallThreshold &&
+      effectiveAcceleration < freefallThreshold &&
       !freeFallDetected.current &&
       yeetActive.current
     ) {
@@ -218,7 +221,7 @@ function App() {
       screamSourceRef.current = playSound("scream");
     }
 
-    if (freeFallDetected.current && totalAcceleration >= freefallThreshold) {
+    if (freeFallDetected.current && effectiveAcceleration >= freefallThreshold) {
       console.log("Device has landed.");
       freeFallDetected.current = false;
       setFreeFalling(false);
