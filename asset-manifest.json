@@ -1,23 +1,25 @@
 {
   "files": {
-    "main.css": "/Landing-Page/static/css/main.111aad83.css",
-    "main.js": "/Landing-Page/static/js/main.33b4adbc.js",
+    "main.css": "/Landing-Page/static/css/main.e801b683.css",
+    "main.js": "/Landing-Page/static/js/main.46d302f0.js",
     "static/js/453.951ee1ab.chunk.js": "/Landing-Page/static/js/453.951ee1ab.chunk.js",
     "static/media/main_logo.png": "/Landing-Page/static/media/main_logo.e086fe79db2d170bd405.png",
     "static/media/man_scream.mp3": "/Landing-Page/static/media/man_scream.6f875bd741e691b874ad.mp3",
     "static/media/Dark souls death.mp3": "/Landing-Page/static/media/Dark souls death.b5ff56441c999e8721a4.mp3",
     "static/media/noob_jump.mp3": "/Landing-Page/static/media/noob_jump.008516adf5a98a6af4aa.mp3",
     "static/media/what_the_fucking_kind_of_jump.mp3": "/Landing-Page/static/media/what_the_fucking_kind_of_jump.42da39590da55a4bec6d.mp3",
+    "static/media/are_you_alive.mp3": "/Landing-Page/static/media/are_you_alive.278be80996d3657ef324.mp3",
     "static/media/i_dont_fucking_know.mp3": "/Landing-Page/static/media/i_dont_fucking_know.89ca866abcb6c882a186.mp3",
     "static/media/when_is_he_gonna_jump.mp3": "/Landing-Page/static/media/when_is_he_gonna_jump.d976fbdaca01ffabd933.mp3",
+    "static/media/maybe_not.mp3": "/Landing-Page/static/media/maybe_not.d0e4910629d8ea817f03.mp3",
     "static/media/okay_lets_go.mp3": "/Landing-Page/static/media/okay_lets_go.64dbcd27196bcc42e36c.mp3",
     "index.html": "/Landing-Page/index.html",
-    "main.111aad83.css.map": "/Landing-Page/static/css/main.111aad83.css.map",
-    "main.33b4adbc.js.map": "/Landing-Page/static/js/main.33b4adbc.js.map",
+    "main.e801b683.css.map": "/Landing-Page/static/css/main.e801b683.css.map",
+    "main.46d302f0.js.map": "/Landing-Page/static/js/main.46d302f0.js.map",
     "453.951ee1ab.chunk.js.map": "/Landing-Page/static/js/453.951ee1ab.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.111aad83.css",
-    "static/js/main.33b4adbc.js"
+    "static/css/main.e801b683.css",
+    "static/js/main.46d302f0.js"
   ]
 }
