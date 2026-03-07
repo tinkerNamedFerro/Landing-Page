@@ -1,16 +1,19 @@
 {
   "files": {
-    "main.css": "/Landing-Page/static/css/main.01fcdbb6.css",
-    "main.js": "/Landing-Page/static/js/main.0bcb1e0b.js",
+    "main.css": "/Landing-Page/static/css/main.111aad83.css",
+    "main.js": "/Landing-Page/static/js/main.617cfcc8.js",
     "static/js/453.951ee1ab.chunk.js": "/Landing-Page/static/js/453.951ee1ab.chunk.js",
-    "static/media/bombardino-crocodilo.png": "/Landing-Page/static/media/bombardino-crocodilo.e0d190f3b23ddd15c5a0.png",
+    "static/media/main_logo.png": "/Landing-Page/static/media/main_logo.e086fe79db2d170bd405.png",
+    "static/media/man_scream.mp3": "/Landing-Page/static/media/man_scream.6f875bd741e691b874ad.mp3",
+    "static/media/Dark souls death.mp3": "/Landing-Page/static/media/Dark souls death.b5ff56441c999e8721a4.mp3",
+    "static/media/okay_lets_go.mp3": "/Landing-Page/static/media/okay_lets_go.64dbcd27196bcc42e36c.mp3",
     "index.html": "/Landing-Page/index.html",
-    "main.01fcdbb6.css.map": "/Landing-Page/static/css/main.01fcdbb6.css.map",
-    "main.0bcb1e0b.js.map": "/Landing-Page/static/js/main.0bcb1e0b.js.map",
+    "main.111aad83.css.map": "/Landing-Page/static/css/main.111aad83.css.map",
+    "main.617cfcc8.js.map": "/Landing-Page/static/js/main.617cfcc8.js.map",
     "453.951ee1ab.chunk.js.map": "/Landing-Page/static/js/453.951ee1ab.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.01fcdbb6.css",
-    "static/js/main.0bcb1e0b.js"
+    "static/css/main.111aad83.css",
+    "static/js/main.617cfcc8.js"
   ]
 }
