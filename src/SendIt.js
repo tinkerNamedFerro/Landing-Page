@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 
-function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, dropHeight, onYeet, freeFalling, muted, toggleMute, permissionGranted, requestIOSPermission }) {
+function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, dropHeight, onYeet, freeFalling, muted, toggleMute, permissionGranted, requestIOSPermission, playWhenJumpNarration}) {
   const [showAccel, setShowAccel] = useState(false);
   const [yeetCount, setYeetCount] = useState(0);
+  const narrationTimerRef = useRef(null);
+
+  // Cancel narration timer as soon as a jump is detected
+  useEffect(() => {
+    if (freeFalling && narrationTimerRef.current) {
+      clearTimeout(narrationTimerRef.current);
+      narrationTimerRef.current = null;
+    }
+  }, [freeFalling]);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (narrationTimerRef.current) clearTimeout(narrationTimerRef.current);
+    };
+  }, []);
 
   const YEET_LABELS = [
     'YEET THIS SHIT',
@@ -33,7 +49,15 @@ function SendIt({ setCurrentPage, unlockAudio, accelXYZ, totalAcceleration, drop
         className={`yeet-button${yeetCount > 0 ? ' yeet-button--chickened' : ''}`}
         disabled={yeetCount >= YEET_LABELS.length - 1}
         onClick={() => {
-          if (yeetCount === 0) { unlockAudio?.(); onYeet?.(); }
+          if (yeetCount === 0) {
+            unlockAudio?.();
+            onYeet?.();
+            // Play narration after 5s if no jump detected yet
+            narrationTimerRef.current = setTimeout(() => {
+              narrationTimerRef.current = null;
+              playWhenJumpNarration?.();
+            }, 5000);
+          }
           setYeetCount(c => Math.min(c + 1, YEET_LABELS.length - 1));
         }}
       >

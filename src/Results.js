@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 
 function Results({ setCurrentPage, dropHeight, flightTime }) {
+
   return (
     <div className="results-page">
       <h1 className="sendit-headline">Results</h1>
