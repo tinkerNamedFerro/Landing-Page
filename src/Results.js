@@ -26,22 +26,52 @@ function useCountUp(target, { duration = 1300, decimals = 2, delay = 0 } = {}) {
 function Results({ setCurrentPage, dropHeight, flightTime, died }) {
   const addEntry = useMutation(api.leaderboard.addEntry);
   const [entrySent, setEntrySent] = useState(false);
-
-  const names = [
-    'Apollo', 'Buzz', 'Cosmo', 'Delta', 'Echo',
-    'Falcon', 'Gemini', 'Hawk', 'Icarus', 'Jupiter'
-  ];
+  const [playerName, setPlayerName] = useState('');
+  const [nameSubmitted, setNameSubmitted] = useState(died); // If died, skip name input
 
   useEffect(() => {
-    if (!entrySent && !died) {
-      const randomName = names[Math.floor(Math.random() * names.length)];
-      addEntry({ name: randomName, distance: dropHeight, time: flightTime, survived: true });
+    if (!entrySent && nameSubmitted && !died) {
+      addEntry({ name: playerName, distance: dropHeight, time: flightTime, survived: true });
       setEntrySent(true);
     }
-  }, [addEntry, dropHeight, flightTime, entrySent, died]);
+  }, [addEntry, dropHeight, flightTime, entrySent, died, playerName, nameSubmitted]);
 
   const animDist = useCountUp(dropHeight, { delay: 320 });
   const animTime = useCountUp(flightTime, { delay: 500 });
+
+  const handleNameSubmit = (e) => {
+    e.preventDefault();
+    if (playerName.trim()) {
+      setNameSubmitted(true);
+    }
+  };
+
+  // Show name input form if user survived and hasn't submitted name yet
+  if (!died && !nameSubmitted) {
+    return (
+      <div className="results-page">
+        <div className="results-trophy">🏆</div>
+        <h1 className="sendit-headline results-headline">You Survived!</h1>
+        <div className="results-content">
+          <form className="name-input-form" onSubmit={handleNameSubmit}>
+            <label className="name-input-label">Enter Your Name:</label>
+            <input
+              type="text"
+              className="name-input-field"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              placeholder="Your name"
+              maxLength={20}
+              autoFocus
+            />
+            <button type="submit" className="yeet-button" disabled={!playerName.trim()}>
+              <span className="yeet-button-text">Submit</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="results-page">

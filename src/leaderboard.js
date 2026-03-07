@@ -11,9 +11,9 @@ function Leaderboard({ setCurrentPage }) {
   const survivedTrue = entries.filter((e) => e.survived);
   const survivedFalse = entries.filter((e) => !e.survived);
 
-  // sort each list by distance
-  const distanceDescending = [...survivedFalse].sort((a, b) => b.distance - a.distance);
-  const distanceAscending = [...survivedTrue].sort((a, b) => a.distance - b.distance);
+  // sort survivors by distance descending (highest distance = best)
+  const survivorsByDistance = [...survivedTrue].sort((a, b) => b.distance - a.distance);
+  const failedByDistance = [...survivedFalse].sort((a, b) => b.distance - a.distance);
 
   return (
     <div className="sendit-page">
@@ -32,7 +32,7 @@ function Leaderboard({ setCurrentPage }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {distanceAscending.map((entry, index) => (
+                  {survivorsByDistance.map((entry, index) => (
                     <tr 
                       key={index} 
                       className="leaderboard-row"
