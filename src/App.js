@@ -1,78 +1,236 @@
+import { useRef, useState, useEffect } from "react";
+import manScreamSrc from "./sounds/man_scream.mp3";
+import darkSoulsSrc from "./sounds/Dark souls death.mp3";
+import okayLetsGoSrc from "./sounds/okay_lets_go.mp3";
 
-import { useRef, useState } from "react";
-import Jump from "./components/Jump";
-import Leaderboard from './leaderboard';
-import Results from './Results';
-import SendIt from './SendIt';
-import './App.css';
-
+import Leaderboard from "./leaderboard";
+import Results from "./Results";
+import SendIt from "./SendIt";
+import "./App.css";
 
 const freefallThreshold = 0.5; // m/s²
 
-  function calculateDropHeight(timeOfFreefall) {
-    const timeOfFlight = (Date.now() - timeOfFreefall) / 1000; // Convert ms to seconds
-    return 0.5 * 9.81 * timeOfFlight ** 2; // h = 0.5 * g * t²
-  }
+function calculateDropHeight(timeOfFreefall) {
+  const timeOfFlight = (Date.now() - timeOfFreefall) / 1000; // Convert ms to seconds
+  return 0.5 * 9.81 * timeOfFlight ** 2; // h = 0.5 * g * t²
+}
 function App() {
+  const [permissionGranted, setPermissionGranted] = useState(false);
+  const [needsPermission, setNeedsPermission] = useState(false);
 
-
-  const [currentPage, setCurrentPage] = useState('leaderboard');
+  const [currentPage, setCurrentPage] = useState("sendit");
 
   const [dropHeight, setDropHeight] = useState(0);
+  const [flightTime, setFlightTime] = useState(0);
 
+  const [freeFalling, setFreeFalling] = useState(false);
   const timeOfFreeFall = useRef(null);
- const freeFallDetected = useRef(false);
+  const freeFallDetected = useRef(false);
+  // Web Audio API refs (works reliably on iOS)
+  const audioCtxRef = useRef(null);
+  const gainNodeRef = useRef(null);
+  const buffersRef = useRef({ scream: null, death: null, okay: null });
+  const screamSourceRef = useRef(null);
+  const [died, setDied] = useState(false);
+  const yeetActive = useRef(false);
+  const audioUnlocked = useRef(false);
+  const mutedRef = useRef(false);
   const [totalAcceleration, setTotalAcceleration] = useState(0);
+  const [accelXYZ, setAccelXYZ] = useState({ x: 0, y: 0, z: 0 });
+  const [muted, setMuted] = useState(false);
 
-  function accelerometerHandler(acc) {
+  const isIOS = () =>
+    typeof DeviceMotionEvent !== "undefined" &&
+    typeof DeviceMotionEvent.requestPermission === "function";
+
+  // Create AudioContext and preload all audio buffers on mount
+  useEffect(() => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+    audioCtxRef.current = ctx;
+    gainNodeRef.current = gain;
+
+    const loadBuffer = async (src) => {
+      const res = await fetch(src);
+      const ab = await res.arrayBuffer();
+      return ctx.decodeAudioData(ab);
+    };
+
+    Promise.all([
+      loadBuffer(manScreamSrc),
+      loadBuffer(darkSoulsSrc),
+      loadBuffer(okayLetsGoSrc),
+    ])
+      .then(([scream, death, okay]) => {
+        buffersRef.current = { scream, death, okay };
+      })
+      .catch((e) => console.error("Audio preload error:", e));
+
+    return () => ctx.close();
+  }, []);
+
+  useEffect(() => {
+    if (isIOS()) {
+      // iOS 13+ - check if permission is already granted
+      DeviceMotionEvent.requestPermission()
+        .then((response) => {
+          if (response === "granted") {
+            setPermissionGranted(true);
+            window.addEventListener("devicemotion", accelerometerHandler);
+          } else {
+            setNeedsPermission(true);
+          }
+        })
+        .catch(() => {
+          // Permission not yet requested, show button
+          setNeedsPermission(true);
+        });
+    } else if (typeof window.DeviceMotionEvent !== "undefined") {
+      // Android / desktop browsers
+      setPermissionGranted(true);
+      window.addEventListener("devicemotion", accelerometerHandler);
+    } else {
+      console.warn("DeviceMotionEvent is not supported on this device.");
+    }
+
+    return () => {
+      window.removeEventListener("devicemotion", accelerometerHandler);
+    };
+  }, []);
+
+  const requestIOSPermission = async () => {
+    try {
+      const response = await DeviceMotionEvent.requestPermission();
+      if (response === "granted") {
+        setPermissionGranted(true);
+        window.addEventListener("devicemotion", accelerometerHandler);
+      } else {
+        alert("Permission denied. Cannot access accelerometer.");
+      }
+    } catch (err) {
+      console.error("Permission request failed:", err);
+    }
+  };
+  function toggleMute() {
+    setMuted((prev) => {
+      const next = !prev;
+      mutedRef.current = next;
+      if (gainNodeRef.current) {
+        gainNodeRef.current.gain.value = next ? 0 : 1;
+      }
+      return next;
+    });
+  }
+
+  function unlockAudio() {
+    // Resume suspended AudioContext on first user gesture (iOS requirement)
+    if (audioCtxRef.current && audioCtxRef.current.state === "suspended") {
+      audioCtxRef.current.resume();
+    }
+    audioUnlocked.current = true;
+  }
+
+  function playSound(bufferName) {
+    const ctx = audioCtxRef.current;
+    const gain = gainNodeRef.current;
+    const buffer = buffersRef.current[bufferName];
+    if (!ctx || !gain || !buffer) return null;
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(gain);
+    source.start(0);
+    return source;
+  }
+
+  function stopScream() {
+    if (screamSourceRef.current) {
+      try { screamSourceRef.current.stop(); } catch (_) {}
+      screamSourceRef.current = null;
+    }
+  }
+
+  function accelerometerHandler(event) {
+    const acc = event.accelerationIncludingGravity;
+
     if (!acc) return;
+
+    const data = {
+      x: acc.x !== null ? acc.x.toFixed(4) : null,
+      y: acc.y !== null ? acc.y.toFixed(4) : null,
+      z: acc.z !== null ? acc.z.toFixed(4) : null,
+    };
     console.log(`Acceleration X: ${acc.x}, Y: ${acc.y}, Z: ${acc.z}`);
     const totalAcceleration = Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
     setTotalAcceleration(totalAcceleration);
-    if (totalAcceleration < freefallThreshold && !freeFallDetected.current) {
+    setAccelXYZ(data);
+    if (freeFallDetected.current) {
+      setDropHeight(calculateDropHeight(timeOfFreeFall.current));
+    }
+    if (
+      totalAcceleration < freefallThreshold &&
+      !freeFallDetected.current &&
+      yeetActive.current
+    ) {
       console.log("Free fall detected!");
       freeFallDetected.current = true;
+      setFreeFalling(true);
       timeOfFreeFall.current = Date.now();
+      screamSourceRef.current = playSound("scream");
     }
 
-    if(freeFallDetected.current && totalAcceleration >= freefallThreshold) {
+    if (freeFallDetected.current && totalAcceleration >= freefallThreshold) {
       console.log("Device has landed.");
       freeFallDetected.current = false;
+      setFreeFalling(false);
       const dropHeight = calculateDropHeight(timeOfFreeFall.current);
+      const flightTime = (Date.now() - timeOfFreeFall.current) / 1000;
       setDropHeight(dropHeight);
+      setFlightTime(flightTime);
+      if (yeetActive.current) {
+        stopScream();
+        yeetActive.current = false;
+        setTimeout(() => {
+          const playerDied = Math.random() < 0.5;
+          setDied(playerDied);
+          playSound(playerDied ? "death" : "okay");
+          setCurrentPage("results");
+        }, 500);
+      }
     }
   }
 
   return (
-    <div className="App">
-      <nav className="app-navigation">
-        <button
-          className={currentPage === 'leaderboard' ? 'active' : ''}
-          onClick={() => setCurrentPage('leaderboard')}
-        >
-          Leaderboard
-        </button>
-        <button
-          className={currentPage === 'results' ? 'active' : ''}
-          onClick={() => setCurrentPage('results')}
-        >
-          Results
-        </button>
-        <button
-          className={currentPage === 'sendit' ? 'active' : ''}
-          onClick={() => setCurrentPage('sendit')}
-        >
-          Send it
-        </button>
-      </nav>
-      {currentPage === 'leaderboard' && <Leaderboard />}
-      {currentPage === 'results' && <Results />}
-      {currentPage === 'sendit' && <SendIt />}
-      <Jump callback={accelerometerHandler} />
-      {freeFallDetected.current && <p style={{ color: "red" }}>Free fall detected!</p>}
-      {<p>Drop height: {dropHeight.toFixed(2)} meters</p>}
-    
-      {totalAcceleration > 0 && <p>Total Acceleration: {totalAcceleration.toFixed(4)} m/s²</p>}
+    <div className="App" onClick={unlockAudio}>
+      {currentPage === "leaderboard" && (
+        <Leaderboard setCurrentPage={setCurrentPage} />
+      )}
+      {currentPage === "results" && (
+        <Results
+          setCurrentPage={setCurrentPage}
+          dropHeight={dropHeight}
+          flightTime={flightTime}
+          died={died}
+        />
+      )}
+      {currentPage === "sendit" && (
+        <SendIt
+          setCurrentPage={setCurrentPage}
+          unlockAudio={unlockAudio}
+          accelXYZ={accelXYZ}
+          totalAcceleration={totalAcceleration}
+          dropHeight={dropHeight}
+          freeFalling={freeFalling}
+          onYeet={() => {
+            yeetActive.current = true;
+          }}
+          muted={muted}
+          toggleMute={toggleMute}
+          permissionGranted={permissionGranted}
+          requestIOSPermission={requestIOSPermission}
+        />
+      )}
+
     </div>
   );
 }

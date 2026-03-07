@@ -2,7 +2,7 @@ import React from 'react';
 import data from './data/data.json';
 import './App.css';
 
-function Leaderboard() {
+function Leaderboard({ setCurrentPage }) {
   const leaderboardData = data.leaderboard;
 
   // Sort by distance descending for distance leaderboard
@@ -12,10 +12,9 @@ function Leaderboard() {
   const distanceAscending = [...leaderboardData].sort((a, b) => a.distance - b.distance);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Leaderboards</h1>
-        <div className="leaderboards-container">
+    <div className="sendit-page">
+      <h1 className="sendit-headline">Leaderboards</h1>
+      <div className="leaderboards-container">
           <div className="leaderboard-section">
             <h2>Those who didn't</h2>
             <div className="leaderboard">
@@ -66,8 +65,10 @@ function Leaderboard() {
               </table>
             </div>
           </div>
-        </div>
-      </header>
+      </div>
+      <button className="yeet-button" onClick={() => setCurrentPage('sendit')}>
+        Back to Home
+      </button>
     </div>
   );
 
