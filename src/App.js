@@ -2,6 +2,10 @@ import { useRef, useState, useEffect } from "react";
 import manScreamSrc from "./sounds/man_scream.mp3";
 import darkSoulsSrc from "./sounds/Dark souls death.mp3";
 import okayLetsGoSrc from "./sounds/okay_lets_go.mp3";
+import whenIsHeGonnaJumpSrc from "./sounds/narration/when_is_he_gonna_jump.mp3";
+import iDontKnowSrc from "./sounds/narration/i_dont_fucking_know.mp3";
+import whatJumpSrc from "./sounds/narration/what_the_fucking_kind_of_jump.mp3";
+import NoobJumpSrc from "./sounds/narration/noob_jump.mp3";
 
 import Leaderboard from "./leaderboard";
 import Results from "./Results";
@@ -61,10 +65,24 @@ function App() {
       loadBuffer(manScreamSrc),
       loadBuffer(darkSoulsSrc),
       loadBuffer(okayLetsGoSrc),
+      loadBuffer(whenIsHeGonnaJumpSrc),
+      loadBuffer(iDontKnowSrc),
+      loadBuffer(whatJumpSrc),
+      loadBuffer(NoobJumpSrc),
     ])
-      .then(([scream, death, okay]) => {
-        buffersRef.current = { scream, death, okay };
-      })
+      .then(
+        ([scream, death, okay, whenJump, iDontKnow, whatJump, noobJump]) => {
+          buffersRef.current = {
+            scream,
+            death,
+            okay,
+            whenJump,
+            iDontKnow,
+            whatJump,
+            noobJump,
+          };
+        },
+      )
       .catch((e) => console.error("Audio preload error:", e));
 
     return () => ctx.close();
@@ -143,9 +161,30 @@ function App() {
     return source;
   }
 
+  function playWhenJumpNarration() {
+    const source = playSound("whenJump");
+    if (source) {
+      source.onended = () => playSound("iDontKnow");
+    }
+  }
+  function playWhatKindNarration(distance) {
+    const source = playSound("whatJump");
+    if (source) {
+      source.onended = () => {
+        if (distance < 0.3) {
+          playSound("noobJump");
+        } else {
+          playSound("iDontKnow");
+        }
+      };
+    }
+  }
+
   function stopScream() {
     if (screamSourceRef.current) {
-      try { screamSourceRef.current.stop(); } catch (_) {}
+      try {
+        screamSourceRef.current.stop();
+      } catch (_) {}
       screamSourceRef.current = null;
     }
   }
@@ -194,6 +233,7 @@ function App() {
           const playerDied = Math.random() < 0.5;
           setDied(playerDied);
           playSound(playerDied ? "death" : "okay");
+          playWhatKindNarration(dropHeight);
           setCurrentPage("results");
         }, 500);
       }
@@ -228,9 +268,10 @@ function App() {
           toggleMute={toggleMute}
           permissionGranted={permissionGranted}
           requestIOSPermission={requestIOSPermission}
+          playWhenJumpNarration={playWhenJumpNarration}
+          playWhatKindNarration={playWhatKindNarration}
         />
       )}
-
     </div>
   );
 }
